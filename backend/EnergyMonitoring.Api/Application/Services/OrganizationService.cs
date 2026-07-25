@@ -128,10 +128,8 @@ namespace EnergyMonitoring.Api.Application.Services
             {
                 organization.ParentOrganizationId = null;
             }
-            else if (request.ParentOrganizationId is not null)
+            else if (request.ParentOrganizationId is int parentId)
             {
-                var parentId = request.ParentOrganizationId;
-
                 if (parentId == id)
                 {
                     throw new ArgumentException(
@@ -147,6 +145,12 @@ namespace EnergyMonitoring.Api.Application.Services
                 {
                     throw new ArgumentException(
                         "Belirtilen üst organizasyon bulunamadı.");
+                }
+
+                if (await this.WouldCreateCycleAsync(id, parentId, cancellationToken))
+                {
+                    throw new ArgumentException(
+                        "Organizasyon kendi alt organizasyonlarından birinin altına taşınamaz.");
                 }
 
                 organization.ParentOrganizationId = parentId;
@@ -202,6 +206,32 @@ namespace EnergyMonitoring.Api.Application.Services
                     x.IsActive,
                     BuildTree(organizations, x.Id)))
                 .ToList();
+        }
+
+        private async Task<bool> WouldCreateCycleAsync(int organizationId, int newParentId, CancellationToken cancellationToken)
+        {
+            int? currentId = newParentId;
+            var visitedIds = new HashSet<int>();
+
+            while (currentId.HasValue)
+            {
+                if (currentId.Value == organizationId)
+                {
+                    return true;
+                }
+
+                if (!visitedIds.Add(currentId.Value))
+                {
+                    return true;
+                }
+
+                currentId = await this.dbContext.Organizations
+                    .Where(x => x.Id == currentId.Value)
+                    .Select(x => x.ParentOrganizationId)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            return false;
         }
     }
 }
