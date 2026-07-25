@@ -26,6 +26,7 @@ namespace EnergyMonitoring.Api.Application.Services
                     x.Description,
                     x.ParentOrganizationId,
                     x.IsActive,
+                    x.IsDeleted,
                     x.CreatedAtUtc,
                     x.UpdatedAtUtc))
                 .ToListAsync(cancellationToken);
@@ -41,6 +42,7 @@ namespace EnergyMonitoring.Api.Application.Services
                     x.Description,
                     x.ParentOrganizationId,
                     x.IsActive,
+                    x.IsDeleted,
                     x.CreatedAtUtc,
                     x.UpdatedAtUtc))
                 .FirstOrDefaultAsync(cancellationToken);
@@ -65,6 +67,7 @@ namespace EnergyMonitoring.Api.Application.Services
                 organization.Description,
                 organization.ParentOrganizationId,
                 organization.IsActive,
+                organization.IsDeleted,
                 organization.CreatedAtUtc,
                 organization.UpdatedAtUtc);
         }
@@ -161,8 +164,22 @@ namespace EnergyMonitoring.Api.Application.Services
                 organization.Description,
                 organization.ParentOrganizationId,
                 organization.IsActive,
+                organization.IsDeleted,
                 organization.CreatedAtUtc,
                 organization.UpdatedAtUtc);
+        }
+
+        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            var affectedRows = await dbContext.Organizations
+                .Where(x => x.Id == id && !x.IsDeleted)
+                .ExecuteUpdateAsync(
+                    setters => setters
+                        .SetProperty(x => x.IsDeleted, true)
+                        .SetProperty(x => x.UpdatedAtUtc, DateTime.UtcNow),
+                    cancellationToken);
+
+            return affectedRows > 0;
         }
     }
 }

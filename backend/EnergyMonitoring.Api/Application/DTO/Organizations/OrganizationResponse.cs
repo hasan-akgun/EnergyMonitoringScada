@@ -6,6 +6,7 @@ public sealed record OrganizationResponse(
     string? Description,
     int? ParentOrganizationId,
     bool IsActive,
+    bool IsDeleted,
     DateTime CreatedAtUtc,
     DateTime? UpdatedAtUtc);
 

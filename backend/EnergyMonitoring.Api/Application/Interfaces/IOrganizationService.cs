@@ -19,5 +19,9 @@ namespace EnergyMonitoring.Api.Application.Interfaces
             int id,
             UpdateOrganizationRequest request,
             CancellationToken cancellationToken);
+
+        Task<bool> DeleteAsync(
+            int id,
+            CancellationToken cancellationToken);
     }
 }

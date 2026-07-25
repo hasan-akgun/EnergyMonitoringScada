@@ -66,5 +66,12 @@ namespace EnergyMonitoring.Api.Controllers
 
             return Ok(organization);
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+        {
+            var isDeleted = await this.organizationService.DeleteAsync(id, cancellationToken);
+            return isDeleted ? NoContent() : NotFound();
+        }
     }
 }
