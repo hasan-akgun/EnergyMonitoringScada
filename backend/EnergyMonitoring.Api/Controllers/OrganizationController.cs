@@ -73,5 +73,12 @@ namespace EnergyMonitoring.Api.Controllers
             var isDeleted = await this.organizationService.DeleteAsync(id, cancellationToken);
             return isDeleted ? NoContent() : NotFound();
         }
+
+        [HttpGet("tree")]
+        public async Task<ActionResult<IReadOnlyList<OrganizationTreeResponse>>> GetTreeAsync(CancellationToken cancellationToken)
+        {
+            var tree = await this.organizationService.GetTreeAsync(cancellationToken);
+            return Ok(tree);
+        }
     }
 }

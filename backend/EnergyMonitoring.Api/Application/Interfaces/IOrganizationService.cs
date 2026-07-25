@@ -23,5 +23,8 @@ namespace EnergyMonitoring.Api.Application.Interfaces
         Task<bool> DeleteAsync(
             int id,
             CancellationToken cancellationToken);
+
+        Task<IReadOnlyList<OrganizationTreeResponse>> GetTreeAsync(
+            CancellationToken cancellationToken);
     }
 }
