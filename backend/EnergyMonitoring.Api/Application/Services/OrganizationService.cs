@@ -1,5 +1,6 @@
 ﻿using EnergyMonitoring.Api.Application.DTO.Organizations;
 using EnergyMonitoring.Api.Application.Interfaces;
+using EnergyMonitoring.Api.Common.Exceptions;
 using EnergyMonitoring.Api.Domain.Entities;
 using EnergyMonitoring.Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -90,13 +91,15 @@ namespace EnergyMonitoring.Api.Application.Services
 
             if (request.ClearDescription && request.Description is not null)
             {
-                throw new ArgumentException(
+                throw new ValidationException(
+                    nameof(request.Description),
                     "Description ve ClearDescription aynı anda gönderilemez.");
             }
 
             if (request.ClearParentOrganization && request.ParentOrganizationId.HasValue)
             {
-                throw new ArgumentException(
+                throw new ValidationException(
+                    nameof(request.ParentOrganizationId),
                     "ParentOrganizationId ve ClearParentOrganization aynı anda gönderilemez.");
             }
 
@@ -132,7 +135,8 @@ namespace EnergyMonitoring.Api.Application.Services
             {
                 if (parentId == id)
                 {
-                    throw new ArgumentException(
+                    throw new ValidationException(
+                        nameof(request.ParentOrganizationId),
                         "Organizasyon kendisinin üst organizasyonu olamaz.");
                 }
 
@@ -143,13 +147,14 @@ namespace EnergyMonitoring.Api.Application.Services
 
                 if (!parentExists)
                 {
-                    throw new ArgumentException(
+                    throw new KeyNotFoundException(
                         "Belirtilen üst organizasyon bulunamadı.");
                 }
 
                 if (await this.WouldCreateCycleAsync(id, parentId, cancellationToken))
                 {
-                    throw new ArgumentException(
+                    throw new ValidationException(
+                        nameof(request.ParentOrganizationId),
                         "Organizasyon kendi alt organizasyonlarından birinin altına taşınamaz.");
                 }
 

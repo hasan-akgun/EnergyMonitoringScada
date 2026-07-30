@@ -23,9 +23,7 @@
   <ItemGroup>
     <Folder Include="Application\Models\" />
     <Folder Include="Common\Constants\" />
-    <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Extensions\" />
-    <Folder Include="Common\Middleware\" />
     <Folder Include="Domain\Enums\" />
     <Folder Include="Infrastructure\Authentication\" />
     <Folder Include="Infrastructure\Persistence\Migrations\" />
