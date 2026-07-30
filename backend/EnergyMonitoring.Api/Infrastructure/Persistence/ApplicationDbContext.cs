@@ -8,6 +8,7 @@ namespace EnergyMonitoring.Api.Infrastructure.Persistence
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Organization> Organizations => Set<Organization>();
+        public DbSet<Device> Devices => Set<Device>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
