@@ -94,6 +94,7 @@ namespace EnergyMonitoring.Api.Application.Services
             var hasAnyChange =
                request.Name is not null ||
                request.Description is not null ||
+               request.SerialNumber is not null ||
                request.ClearDescription ||
                request.OrganizationId is not null ||
                request.IsActive is not null;

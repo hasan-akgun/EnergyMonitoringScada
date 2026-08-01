@@ -192,7 +192,7 @@ namespace EnergyMonitoring.Api.Application.Services
             return affectedRows > 0;
         }
 
-        public async Task<IReadOnlyList<OrganizationTreeResponse>> GetTreeAsync(CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<OrganizationTreeResponse>> GetTreeAsync(int? id, CancellationToken cancellationToken)
         {
             var organizations = await this.dbContext.Organizations
             .AsNoTracking()
@@ -200,18 +200,21 @@ namespace EnergyMonitoring.Api.Application.Services
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
 
-            return BuildTree(organizations, null);
+            return BuildTree(organizations, id);
         }
 
         private static List<OrganizationTreeResponse> BuildTree(List<Organization> organizations, int? parentId)
         {
             return organizations
-                .Where(x => x.ParentOrganizationId == parentId)
+                .Where(x => x.ParentOrganizationId == parentId
+                    && x.IsActive
+                    && !x.IsDeleted)
                 .Select(x => new OrganizationTreeResponse(
                     x.Id,
                     x.Name,
                     x.IsActive,
                     x.Devices
+                        .Where(device => device.IsActive && !device.IsDeleted)
                         .OrderBy(device => device.Name)
                         .Select(device => new DeviceTreeResponse(
                             device.Id,

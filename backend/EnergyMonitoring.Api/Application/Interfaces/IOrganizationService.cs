@@ -25,6 +25,7 @@ namespace EnergyMonitoring.Api.Application.Interfaces
             CancellationToken cancellationToken);
 
         Task<IReadOnlyList<OrganizationTreeResponse>> GetTreeAsync(
+            int? id,
             CancellationToken cancellationToken);
     }
 }

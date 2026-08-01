@@ -74,9 +74,9 @@ namespace EnergyMonitoring.Api.Controllers
         }
 
         [HttpGet("tree")]
-        public async Task<ActionResult<IReadOnlyList<OrganizationTreeResponse>>> GetTreeAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IReadOnlyList<OrganizationTreeResponse>>> GetTreeAsync([FromQuery] int? id, CancellationToken cancellationToken)
         {
-            var tree = await this.organizationService.GetTreeAsync(cancellationToken);
+            var tree = await this.organizationService.GetTreeAsync(id, cancellationToken);
             return Ok(tree);
         }
     }
