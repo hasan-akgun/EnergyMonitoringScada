@@ -1,6 +1,5 @@
 ﻿using EnergyMonitoring.Api.Application.DTO.Organizations;
 using EnergyMonitoring.Api.Application.Interfaces;
-using EnergyMonitoring.Api.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EnergyMonitoring.Api.Controllers

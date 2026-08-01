@@ -1,4 +1,5 @@
-﻿using EnergyMonitoring.Api.Application.DTO.Organizations;
+﻿using EnergyMonitoring.Api.Application.DTO.Devices;
+using EnergyMonitoring.Api.Application.DTO.Organizations;
 using EnergyMonitoring.Api.Application.Interfaces;
 using EnergyMonitoring.Api.Common.Exceptions;
 using EnergyMonitoring.Api.Domain.Entities;
@@ -195,6 +196,7 @@ namespace EnergyMonitoring.Api.Application.Services
         {
             var organizations = await this.dbContext.Organizations
             .AsNoTracking()
+            .Include(x => x.Devices)
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
 
@@ -209,6 +211,14 @@ namespace EnergyMonitoring.Api.Application.Services
                     x.Id,
                     x.Name,
                     x.IsActive,
+                    x.Devices
+                        .OrderBy(device => device.Name)
+                        .Select(device => new DeviceTreeResponse(
+                            device.Id,
+                            device.Name,
+                            device.SerialNumber,
+                            device.IsActive))
+                        .ToList(),
                     BuildTree(organizations, x.Id)))
                 .ToList();
         }
